@@ -36,7 +36,7 @@ services:
     ports:
       - 1003:80
     environment:
-      - GOTIFY_DEFAULTUSER_PASS=play12345
+      - GOTIFY_DEFAULTUSER_PASS=*TUZMIENHASLO*
     volumes:
       - /home/dietpi/containers/gotify:/app/data
     restart: unless-stopped
