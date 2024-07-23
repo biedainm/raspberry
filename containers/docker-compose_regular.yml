@@ -1,4 +1,15 @@
 services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9443:9443
+    volumes:
+      - data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    volumes:
+      data:
+      
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: Homepage
@@ -32,7 +43,7 @@ services:
 
   gotify:
     container_name: Gotify
-    image: gotify/server-arm7
+    image: gotify/server-arm7 # check architecture, depending on installed OS version
     ports:
       - 1003:80
     environment:
