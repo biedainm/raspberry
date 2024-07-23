@@ -1,0 +1,46 @@
+services:
+  influxdb:
+    image: influxdb:2
+    container_name: influxdb
+    restart: always
+    user: 1000:1000
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME= # set username
+      - DOCKER_INFLUXDB_INIT_PASSWORD= # add password
+      - DOCKER_INFLUXDB_INIT_ORG= # set organization name
+      - DOCKER_INFLUXDB_INIT_BUCKET= # set default bucket name
+    ports:
+      - '8086:8086'
+    volumes:
+      - /home/dietpi/containers/influx:/var/lib/influxdb2
+      - /home/dietpi/containers/influx/config:/etc/influxdb2
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    user: 1000:1000
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    links:
+      - influxdb
+    ports:
+      - '3000:3000'
+    volumes:
+      - /home/dietpi/containers/grafana:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /home/dietpi/containers/prometheus/etc:/etc/prometheus
+      - /home/dietpi/containers/prometheus/data:/prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
