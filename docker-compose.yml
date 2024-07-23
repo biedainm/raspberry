@@ -1,0 +1,42 @@
+services:
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: Homepage
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 1000:3000
+    volumes:
+      - /home/dietpi/containers/homepage/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: Uptime-kuma
+    volumes:
+      - /home/dietpi/containers/kuma:/app/data
+    ports:
+      - 1001:3001
+    restart: unless-stopped
+
+  dozzle:
+    container_name: Dozzle_dockerlogs
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 1002:8080
+    restart: unless-stopped
+
+  gotify:
+    container_name: Gotify
+    image: gotify/server-arm7
+    ports:
+      - 1003:80
+    environment:
+      - GOTIFY_DEFAULTUSER_PASS=play12345
+    volumes:
+      - /home/dietpi/containers/gotify:/app/data
+    restart: unless-stopped
